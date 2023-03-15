@@ -38,7 +38,7 @@ const login = async ({email, password}) => {
  * @param username {string} The username for the new user.
  * @return {Promise<void>}
  */
-const register = async ({email, password, username}) => {
+export const register = async ({email, password, username}) => {
     if (email === '' || password === '' || username === '' || !email || !password || !username) {
         throw new Error(`Email, password and username must be defined and can't be an empty string.`)
     }
