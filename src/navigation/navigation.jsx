@@ -27,7 +27,6 @@ const NavigationContainer = styled.ul`
 const Navigation = () => {
     const {isAuthenticated, profile} = useProfile()
     const {mutate: signOut} = useSignOut()
-    console.log(profile?.username)
     let  userInfo = () => {
         if(isAuthenticated){
             return(

@@ -83,7 +83,7 @@ export const useSignOut = () => {
  * @param email {string} The email address that will be used to identify the user.
  * @param password {string} The user's password.
  */
-export const login = async ({email, password}) => {
+const login = async ({email, password}) => {
     const {error} = await supabaseClient.auth.signInWithPassword({email, password})
     if (error) {
         throw error
@@ -99,7 +99,7 @@ export const login = async ({email, password}) => {
  * @param username {string} The username for the new user.
  * @return {Promise<void>}
  */
-export const register = async ({email, password, username}) => {
+const register = async ({email, password, username}) => {
     if (email === '' || password === '' || username === '' || !email || !password || !username) {
         throw new Error(`Email, password and username must be defined and can't be an empty string.`)
     }

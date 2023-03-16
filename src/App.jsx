@@ -10,7 +10,6 @@ function App() {
     const [commaSeparator, setCommaSeparator] = useState(false)
     const {pathname} = useLocation()
     const {profile} = useProfile()
-    console.log(profile?.id)
     if(!profile?.id &&  pathname !=='/login' && pathname !== '/'){
         return <Navigate to={'/login'}/>
     }

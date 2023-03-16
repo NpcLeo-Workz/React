@@ -1,6 +1,7 @@
 import {assertIsLoggedIn, getUser} from './utils/getUser.js';
 import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from './utils/performSupabaseQuery.js';
 import supabaseClient from './utils/supabaseClient.js';
+import {useQuery} from "@tanstack/react-query";
 
 //region Mutations & queries
 /**
@@ -8,7 +9,13 @@ import supabaseClient from './utils/supabaseClient.js';
  *                                          MUTATIONS & QUERIES
  * ---------------------------------------------------------------------------------------------------------------------
  */
-
+export const useGetAllExpensesForMonth = ({month, year}) =>{
+    return useQuery(
+        ['repositories', month,year],
+        ()=> getAllExpensesForMonth({month,year}),
+        {}
+    )
+}
 
 //endregion
 
@@ -86,7 +93,7 @@ const getAllExpensesForMonth = async ({month, year}) => {
  *     profileId: string,
  * }>>}
  */
-const getAllExpensesForYear = async ({year}) => {
+export const getAllExpensesForYear = async ({year}) => {
     await assertIsLoggedIn()
 
     const minDate = new Date(year, 0, 1)
