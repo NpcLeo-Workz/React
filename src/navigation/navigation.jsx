@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 import {NavLink} from 'react-router-dom'
+import {Button} from "react-bootstrap";
+import useProfile from "../hooks/useProfile.js";
+import {useSignOut} from "../api/userAPI.js";
 const NavItem = styled.li`
   list-style: none;
   display: inline-block;
@@ -20,8 +23,28 @@ const NavigationContainer = styled.ul`
   margin: 0;
   display: flex;
 `
+
 const Navigation = () => {
-    
+    const {isAuthenticated, profile} = useProfile()
+    const {mutate: signOut} = useSignOut()
+    console.log(profile?.username)
+    let  userInfo = () => {
+        if(isAuthenticated){
+            return(
+                <NavItem>
+                    Welcome {profile?.username}
+                    <Button onClick={signOut} className="ms-2">
+                        Log out
+                    </Button>
+                </NavItem>
+            )
+        }
+        return (
+            <NavItem>
+                <NavLink to="/login">Log in</NavLink>
+            </NavItem>
+        )
+    }
     return (
         <div>
             <NavigationContainer>
@@ -38,11 +61,9 @@ const Navigation = () => {
                     <NavLink to="/expenses">Expenses</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink to="/login">Log in</NavLink>
-                </NavItem>
-                <NavItem>
                     <NavLink to="/settings">Settings</NavLink>
                 </NavItem>
+                {userInfo()}
             </NavigationContainer>
         </div>
     )
