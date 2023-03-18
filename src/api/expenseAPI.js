@@ -11,8 +11,15 @@ import {useQuery} from "@tanstack/react-query";
  */
 export const useGetAllExpensesForMonth = ({month, year}) =>{
     return useQuery(
-        ['repositories', month,year],
+        ['project_react_expense', month,year],
         ()=> getAllExpensesForMonth({month,year}),
+        {}
+    )
+}
+export const useGetExpenses = (Id)=>{
+    return useQuery(
+        ['project_react_expense', Id],
+        ()=> getExpense(Id),
         {}
     )
 }

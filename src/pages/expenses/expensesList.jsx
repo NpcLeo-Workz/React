@@ -7,9 +7,10 @@ const ExpensesList = () => {
     let year = date.getFullYear()
 
     const {data: expenses} = useGetAllExpensesForMonth({month, year})
+    // console.log(expenses)
     return (
         <>
-            {expenses.map(e => <Expense key={e.id}{...e}/>)}
+            {expenses.map(e => <Expense key={e?.id}{...e}/>)}
         </>
     )
 }

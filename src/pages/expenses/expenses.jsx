@@ -4,7 +4,7 @@ import ExpensesList from "./expensesList.jsx";
 const Expenses = () => {
     return (
         <>
-            <NavLink to="/expenses/newexpense">New Expense</NavLink>
+            <NavLink to="newexpense">New Expense</NavLink>
             <ExpensesList/>
         </>
     )

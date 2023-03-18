@@ -16,7 +16,7 @@ const Routing = () => {
             <Route path={'/expenses'} element={<Outlet/>}>
                 <Route index element={<Expenses/>}/>
                 <Route path={'/expenses/newexpense'} element={<NewExpense/>}/>
-                <Route path={':id'} element={<ExpenseDetails/>}/>
+                <Route path={'/expenses:id'} element={<ExpenseDetails/>}/>
             </Route>
             <Route path={'/login'} element={<Login/>}/>
             <Route path={'/settings'} element={<Settings/>}/>
