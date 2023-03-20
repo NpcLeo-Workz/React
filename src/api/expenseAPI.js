@@ -1,7 +1,7 @@
 import {assertIsLoggedIn, getUser} from './utils/getUser.js';
 import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from './utils/performSupabaseQuery.js';
 import supabaseClient from './utils/supabaseClient.js';
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 //region Mutations & queries
 /**
@@ -22,6 +22,15 @@ export const useGetExpenses = (Id)=>{
         ()=> getExpense(Id),
         {}
     )
+}
+export const useCreateExpense = ()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn:  createExpense,
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_expense'])
+        }
+    })
 }
 
 //endregion

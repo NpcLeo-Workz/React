@@ -6,8 +6,10 @@ const ExpenseDetails = () => {
     const  {data: expense} = useGetExpenses({id})
     return (
         <>
+            {/*show all data*/}
             {<p>{expense?.name}</p>}
             {<p>{id}</p>}
+            {/*edit info*/}
         </>
     )
 }
