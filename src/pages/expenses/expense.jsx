@@ -10,7 +10,7 @@ const Expense = ({id, name, amount, date}) => {
         <div className="expense">
             <h3>{name}</h3>
             <p>{amount}</p>
-            <p>{date.getDay()}/{date.getMonth()}/{date.getFullYear()}</p>
+            <p>{date.getDate()}/{date.getMonth()}/{date.getFullYear()}</p>
             {id && <Button onClick={handleNavigate}>Details</Button>}
         </div>
     )

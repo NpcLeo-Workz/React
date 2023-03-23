@@ -1,6 +1,9 @@
+import DeliveriesList from "./deliveriesList.jsx";
+
 const Deliveries = () => {
     return (
         <>
+            <DeliveriesList/>
         </>
     )
 }

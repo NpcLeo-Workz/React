@@ -1,6 +1,7 @@
 import {assertIsLoggedIn} from './utils/getUser.js';
 import supabaseClient from './utils/supabaseClient.js';
 import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from './utils/performSupabaseQuery.js';
+import {useQuery} from "@tanstack/react-query";
 
 
 //region Mutations & queries
@@ -10,7 +11,13 @@ import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from '.
  * ---------------------------------------------------------------------------------------------------------------------
  */
 
-
+export const useGetAllOpenDeliveries = ()=>{
+    return useQuery(
+        ['project_react_delivery'],
+        ()=> getAllOpenDeliveries(),
+        {}
+    )
+}
 //endregion
 
 //region Supabase functions

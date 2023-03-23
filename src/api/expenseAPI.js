@@ -16,6 +16,13 @@ export const useGetAllExpensesForMonth = ({month, year}) =>{
         {}
     )
 }
+export const useGetAllExpensesForYear = ({year})=>{
+    return useQuery(
+        ['project_react_expense', year],
+        ()=> getAllExpensesForYear({year}),
+        {}
+    )
+}
 export const useGetExpenses = (Id)=>{
     return useQuery(
         ['project_react_expense', Id],
@@ -109,7 +116,7 @@ const getAllExpensesForMonth = async ({month, year}) => {
  *     profileId: string,
  * }>>}
  */
-export const getAllExpensesForYear = async ({year}) => {
+const getAllExpensesForYear = async ({year}) => {
     await assertIsLoggedIn()
 
     const minDate = new Date(year, 0, 1)

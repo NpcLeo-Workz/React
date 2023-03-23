@@ -1,6 +1,7 @@
 import {assertIsLoggedIn} from './utils/getUser.js';
 import supabaseClient from './utils/supabaseClient.js';
 import {performSupabaseQuery} from './utils/performSupabaseQuery.js';
+import {useQuery} from "@tanstack/react-query";
 
 //region Mutations & queries
 /**
@@ -8,7 +9,13 @@ import {performSupabaseQuery} from './utils/performSupabaseQuery.js';
  *                                          MUTATIONS & QUERIES
  * ---------------------------------------------------------------------------------------------------------------------
  */
-
+export const useGetAllCategories = () =>{
+    return useQuery(
+        ['project_react_expense'],
+        ()=> getAllCategories(),
+        {}
+    )
+}
 
 //endregion
 
