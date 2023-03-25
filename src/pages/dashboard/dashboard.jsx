@@ -4,6 +4,7 @@ import {Chart as ChartJS, CategoryScale, LinearScale, PointElement,LineElement,T
 import {useGetAllCategories} from "../../api/categoryAPI.js";
 import {Col, Row} from "react-bootstrap";
 import {useGetAllOpenDeliveries} from "../../api/deliveriesAPI.js";
+import {useState} from "react";
 
 const Dashboard = () => {
     ChartJS.register(
@@ -15,7 +16,8 @@ const Dashboard = () => {
         Tooltip,
         Legend
     )
-    const year = new Date().getFullYear()//needs to become dynamic
+    const [date, setDate] = useState(new Date())
+    const year = date.getFullYear()//needs to become dynamic
     const {data: expenses} = useGetAllExpensesForYear({year})
     const {data:  categories} =  useGetAllCategories()
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",  "Jul", "Aug", "Sep","Oct","Nov","Dec"]
