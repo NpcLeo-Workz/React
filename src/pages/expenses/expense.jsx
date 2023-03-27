@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {Button} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 
 const Expense = ({id, name, amount, date}) => {
     const navigate = useNavigate()
@@ -7,12 +7,21 @@ const Expense = ({id, name, amount, date}) => {
         navigate(`${id}`)
     }
     return (
-        <div className="expense">
-            <h3>{name}</h3>
-            <p>{amount}</p>
-            <p>{date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</p>
-            {id && <Button onClick={handleNavigate}>Details</Button>}
-        </div>
+        <Row>
+            <Col>
+                <h3>{name}</h3>
+            </Col>
+            <Col>
+                <p>€ {amount}</p>
+            </Col>
+            <Col>
+                <p>{date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</p>
+            </Col>
+            <Col>
+                {id && <Button onClick={handleNavigate}>Details</Button>}
+            </Col>
+
+        </Row>
     )
 }
 
