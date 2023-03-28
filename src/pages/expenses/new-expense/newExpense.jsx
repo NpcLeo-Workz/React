@@ -5,15 +5,9 @@ import ResponseMessage from "../../../utils/responseMessage.jsx";
 import FormSubmitButtonWithLoading from "../../../utils/formSubmitButtonWithLoading.jsx";
 import {useNavigate} from "react-router-dom";
 import {useCreateCategory, useGetAllCategories} from "../../../api/categoryAPI.js";
+import {useCreateCurrency, useGetAllCurrencies} from "../../../api/currencyAPI.js";
 
 const NewExpense = () => {
-    //               name,
-    //               amount,
-    //               originalCurrencyId,
-    //               originalCurrencyAmount,
-    //               date,
-    //               categoryId,
-    //               description
     const [name,  setName]  = useState('')
     const [amount, setAmount] = useState(1)
     const [originalCurrencyId,  setOriginalCurrencyId] = useState(0)
@@ -23,15 +17,18 @@ const NewExpense = () => {
     const [description, setDescription] = useState('')
     const {mutate: createNewExpense} = useCreateExpense()
     const {mutate: createNewCategory}= useCreateCategory()
+    const {mutate:  createNewCurrency}= useCreateCurrency()
     const navigateFn = useNavigate()
     const {data: categories}= useGetAllCategories()
+    const {data: currencies}= useGetAllCurrencies()
     const [isNewCategory, setIsNewCategory] = useState(false)
+    const [isNewCurrency, setIsNewCurrency] = useState(false)
     const [newCategory, setNewCategory]=useState('')
-    // const dateHandler=(e)=>{
-    //     console.log(e.target.value)
-    //     const newDate = new Date(e.target.value)
-    //     setDate(newDate)
-    // }
+    const [isInternationalExpense,  setIsInternationalExpense]=useState(false)
+    const[isDeliverToHome,setIsDeliverToHome]=useState(false)
+    const[currencyName,setCurrencyName]=useState('')
+    const[currencySymbol,setCurrencySymbol]=useState('')
+    const[currencyISO,setCurrencyISO]=useState('')
     const categoryHandler = (event)=>{
         if(event.target.value === "new"){
             setIsNewCategory(true)
@@ -39,6 +36,14 @@ const NewExpense = () => {
         }
         setIsNewCategory(false)
         setCategoryId(parseInt(event.target.value))
+    }
+    const currencyHandler = (event)=>{
+        if(event.target.value === "new"){
+            setIsNewCurrency(true)
+            return
+        }
+        setIsNewCurrency(false)
+        setOriginalCurrencyId(parseInt(event.target.value))
     }
     const createExpenseHandler = (event)  =>{
         event.preventDefault()
@@ -54,13 +59,32 @@ const NewExpense = () => {
     }
     const createCategoryHandler=(event)=>{
         event.preventDefault()
-        console.log(newCategory)
         const name = newCategory
         createNewCategory({name})
+        setIsNewCategory(false)
+    }
+    const createCurrencyHandler=(event)=>{
+        event.preventDefault()
+        const name  = currencyName
+        const symbol = currencySymbol
+        const iso = currencyISO
+        createNewCurrency({name,symbol,iso})
+        setIsNewCurrency(false)
+    }
+    const internationalHandler=()=>{
+        setIsInternationalExpense(ex=>{return !ex})
+    }
+    const deliverToHomeHandler=()=>{
+        setIsDeliverToHome(d=>{return !d})
     }
     const getCategories=(
         <>
             {categories.map(cat=> <option value={cat.id}>{cat.name}</option>)}
+        </>
+    )
+    const  getCurrencies=(
+        <>
+            {currencies.map(cur=><option value={cur.id}>{cur.name}</option>)}
         </>
     )
     const newCategoryForm=(
@@ -81,10 +105,69 @@ const NewExpense = () => {
 
         </Form.Group>
     )
+    const newInternationalExpense=(<>
+        <Form.Group>
+            <Form.Label>Original Currency</Form.Label>
+            <Form.Select required onChange={currencyHandler}>
+                <option value="choose" disabled selected="selected">
+                    -- Select currency --
+                </option>
+                {getCurrencies}
+                <option value="new">add new currency</option>
+            </Form.Select>
+        </Form.Group>
+        {isNewCurrency  &&
+            <Row>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Currency Name</Form.Label>
+                        <Form.Control type="text" required placeholder="enter currency name" value={currencyName}
+                                      onChange={e => setCurrencyName(e.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Currency Symbol</Form.Label>
+                        <Form.Control type="text" required placeholder="enter currency Symbol" value={currencySymbol}
+                                      onChange={e => setCurrencySymbol(e.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Currency ISO</Form.Label>
+                        <Form.Control type="text" required placeholder="enter currency ISO" value={currencyISO}
+                                      onChange={e => setCurrencyISO(e.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Button variant="primary" onClick={createCurrencyHandler}>
+                        Add currency
+                    </Button>
+                </Col>
+
+
+
+            </Row>
+
+        }
+
+
+    </>
+    )
     return (
         <Container className="d-flex flex-column vh-100">
             <Row className="justify-content-center">
-                <Col xs={12} sm={8}>
+                <Col>
+                    <Form.Group className="mb-3">
+                        <Form.Check type="switch" label="International expense" checked={isInternationalExpense}
+                                    onChange={internationalHandler}/>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Check type="switch" label="Delivered to home" checked={isDeliverToHome}
+                                    onChange={deliverToHomeHandler}/>
+                    </Form.Group>
+                </Col>
+                <Col sm={8}>
 
                     <Row>
                         <Form onSubmit={createExpenseHandler}>
@@ -114,6 +197,7 @@ const NewExpense = () => {
                                 </Form.Select>
                             </Form.Group>
                             {isNewCategory && newCategoryForm}
+                            {isInternationalExpense  && newInternationalExpense}
                             {/*make option international expense: currency, originalCurrencyAmount, */}
                             {/*make option new currency: name, ISO, symbol */}
                             {/*make option Home Delivery: for each: price, deliveryDate, description */}
