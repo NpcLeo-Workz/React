@@ -26,7 +26,7 @@ const App=()=> {
   return (
         <SettingsContext.Provider value={{listByCategory, toggleListByCategory, budget,setBudget}}>
             <Navigation/>
-            <div className="container">
+            <div>
                 <Routing/>
             </div>
         </SettingsContext.Provider>

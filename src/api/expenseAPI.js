@@ -33,7 +33,10 @@ export const useGetExpenses = (Id)=>{
 export const useCreateExpense = ()=>{
     const queryClient = useQueryClient();
     return  useMutation({
-        mutationFn:  createExpense,
+        mutationFn: createExpense,
+        onSuccess: (data)=>{
+            return data
+        },
         onSettled: async ()=>{
             await queryClient.invalidateQueries(['project_react_expense'])
         }
@@ -90,7 +93,6 @@ const getAllExpensesForMonth = async ({month, year}) => {
     const expenses = await performSupabaseQuery(query)
     return expenses.map(e => ({...e, date: new Date(e.date)}))
 }
-
 /**
  * Retrieve all expenses for a given year.
  *

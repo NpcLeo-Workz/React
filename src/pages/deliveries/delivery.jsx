@@ -1,4 +1,4 @@
-import {Button} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 
 const Delivery = ({description, price, expectedDeliveryDate, expenseId}) => {
@@ -8,12 +8,21 @@ const Delivery = ({description, price, expectedDeliveryDate, expenseId}) => {
         navigate(`/expenses/${expenseId}`)
     }
     return (
-        <div className="delivery">
-            <h3>{description}</h3>
-            <p>{price}</p>
-            <p>{expectedDeliveryDate.getDate()}/{expectedDeliveryDate.getMonth()}/{expectedDeliveryDate.getFullYear()}</p>
-            {expenseId && <Button onClick={handleNavigate}>Details</Button>}
-        </div>
+        <Row>
+            <Col>
+                <h3>{description}</h3>
+            </Col>
+            <Col>
+                <p>{price}</p>
+            </Col>
+            <Col>
+                <p>{expectedDeliveryDate.getDate()}/{expectedDeliveryDate.getMonth()}/{expectedDeliveryDate.getFullYear()}</p>
+            </Col>
+            <Col>
+                {expenseId && <Button onClick={handleNavigate}>Details</Button>}
+            </Col>
+
+        </Row>
     )
 }
 

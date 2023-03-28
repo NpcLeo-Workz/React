@@ -6,18 +6,22 @@ import FormSubmitButtonWithLoading from "../../../utils/formSubmitButtonWithLoad
 import {useNavigate} from "react-router-dom";
 import {useCreateCategory, useGetAllCategories} from "../../../api/categoryAPI.js";
 import {useCreateCurrency, useGetAllCurrencies} from "../../../api/currencyAPI.js";
+import Delivery from "../../deliveries/delivery.jsx";
+import {useCreateDelivery} from "../../../api/deliveriesAPI.js";
+import expenses from "../expenses.jsx";
 
 const NewExpense = () => {
     const [name,  setName]  = useState('')
     const [amount, setAmount] = useState(1)
     const [originalCurrencyId,  setOriginalCurrencyId] = useState(0)
-    const [originalCurrencyAmount, setOriginalCurrencyAmount] = useState(0)
+    const [originalCurrencyAmount, setOriginalCurrencyAmount] = useState(1)
     const [date, setDate] = useState(new Date())
     const [categoryId, setCategoryId] = useState(1)
     const [description, setDescription] = useState('')
-    const {mutate: createNewExpense} = useCreateExpense()
+    const {data: newExpense,mutate: createNewExpense, isSuccess} = useCreateExpense()
     const {mutate: createNewCategory}= useCreateCategory()
     const {mutate:  createNewCurrency}= useCreateCurrency()
+    const {mutate: createNewDelivery}=useCreateDelivery()
     const navigateFn = useNavigate()
     const {data: categories}= useGetAllCategories()
     const {data: currencies}= useGetAllCurrencies()
@@ -29,6 +33,10 @@ const NewExpense = () => {
     const[currencyName,setCurrencyName]=useState('')
     const[currencySymbol,setCurrencySymbol]=useState('')
     const[currencyISO,setCurrencyISO]=useState('')
+    const[deliveryDescription,setDeliveryDescription]= useState('')
+    const [price,setPrice]=useState(1)
+    const[expectedDeliveryDate,setExpectedDeliveryDate]=useState(new Date())
+    const [newDeliveries, setNewDeliveries]= useState([])
     const categoryHandler = (event)=>{
         if(event.target.value === "new"){
             setIsNewCategory(true)
@@ -47,6 +55,14 @@ const NewExpense = () => {
     }
     const createExpenseHandler = (event)  =>{
         event.preventDefault()
+        console.log({
+            name,
+            amount,
+            originalCurrencyId,
+            originalCurrencyAmount,
+            date,
+            categoryId,
+            description})
         createNewExpense({
             name,
             amount,
@@ -55,6 +71,23 @@ const NewExpense = () => {
             date,
             categoryId,
             description})
+
+    }
+    if(isSuccess){
+        if(isDeliverToHome){
+            newDeliveries.map(delivery=>
+                {
+                    const deliv ={
+                        description: delivery.description,
+                        expenseId: newExpense.id,
+                        price: delivery.price,
+                        expectedDeliveryDate: delivery.expectedDeliveryDate,
+                    }
+                    createNewDelivery(deliv)
+                 }
+           )
+            setIsDeliverToHome(false)
+        }
         setTimeout(() => navigateFn('/expenses'), 1500)
     }
     const createCategoryHandler=(event)=>{
@@ -77,14 +110,27 @@ const NewExpense = () => {
     const deliverToHomeHandler=()=>{
         setIsDeliverToHome(d=>{return !d})
     }
+    const addDeliveryToList=()=>{
+        const delivery={
+            description: deliveryDescription,
+            price:  price,
+            expectedDeliveryDate: expectedDeliveryDate
+        }
+        setNewDeliveries(d=> [...d, delivery])
+    }
     const getCategories=(
         <>
-            {categories.map(cat=> <option value={cat.id}>{cat.name}</option>)}
+            {categories.map(cat=> <option key={cat.id} value={cat.id}>{cat.name}</option>)}
         </>
     )
     const  getCurrencies=(
         <>
-            {currencies.map(cur=><option value={cur.id}>{cur.name}</option>)}
+            {currencies.map(cur=><option key={cur.id} value={cur.id}>{cur.name}</option>)}
+        </>
+    )
+    const getDeliveriesFromList=(
+        <>
+            {newDeliveries.map((d, index) => <Delivery key={index}{...d}/>)}
         </>
     )
     const newCategoryForm=(
@@ -108,13 +154,18 @@ const NewExpense = () => {
     const newInternationalExpense=(<>
         <Form.Group>
             <Form.Label>Original Currency</Form.Label>
-            <Form.Select required onChange={currencyHandler}>
-                <option value="choose" disabled selected="selected">
+            <Form.Select required onChange={currencyHandler} >
+                <option value="choose" disabled selected>
                     -- Select currency --
                 </option>
                 {getCurrencies}
                 <option value="new">add new currency</option>
             </Form.Select>
+        </Form.Group>
+        <Form.Group>
+            <Form.Label>Original Currency Amount</Form.Label>
+            <Form.Control type="number" required placeholder="enter original currency amount" value={originalCurrencyAmount}
+                          onChange={e => setOriginalCurrencyAmount(parseInt(e.target.value))}/>
         </Form.Group>
         {isNewCurrency  &&
             <Row>
@@ -144,18 +195,52 @@ const NewExpense = () => {
                         Add currency
                     </Button>
                 </Col>
-
-
-
+            </Row>
+        }
+    </>
+    )
+    const newHomeDelivery=(
+        <>
+            <h3>Deliveries</h3>
+            <Row>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Delivery Description</Form.Label>
+                        <Form.Control type="text" required placeholder="enter description" value={deliveryDescription}
+                                      onChange={e => setDeliveryDescription(e.target.value)}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Delivery Price</Form.Label>
+                        <Form.Control type="number" required placeholder="price" value={price}
+                                      onChange={e => setPrice(parseInt(e.target.value))}/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group className="mb-3" controlId="formBasicDate">
+                        <Form.Label>Expected Delivery Date</Form.Label>
+                        <Form.Control type="date" required
+                                      onChange={e => setExpectedDeliveryDate(new Date(e.target.value)) }/>
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Button variant="primary" onClick={addDeliveryToList}>
+                        Add Delivery
+                    </Button>
+                </Col>
+            </Row>
+            <Row>
+                {getDeliveriesFromList}
             </Row>
 
-        }
-
-
-    </>
+        </>
     )
     return (
         <Container className="d-flex flex-column vh-100">
+            <Row>
+                <h2>New Expense</h2>
+            </Row>
             <Row className="justify-content-center">
                 <Col>
                     <Form.Group className="mb-3">
@@ -189,7 +274,7 @@ const NewExpense = () => {
                             <Form.Group>
                                 <Form.Label>Category</Form.Label>
                                 <Form.Select required onChange={categoryHandler}>
-                                    <option value="choose" disabled selected="selected">
+                                    <option value="choose" disabled selected>
                                         -- Select category --
                                     </option>
                                     {getCategories}
@@ -198,9 +283,13 @@ const NewExpense = () => {
                             </Form.Group>
                             {isNewCategory && newCategoryForm}
                             {isInternationalExpense  && newInternationalExpense}
-                            {/*make option international expense: currency, originalCurrencyAmount, */}
-                            {/*make option new currency: name, ISO, symbol */}
+                            {isDeliverToHome && newHomeDelivery}
                             {/*make option Home Delivery: for each: price, deliveryDate, description */}
+                            <Form.Group className="mb-3" controlId="formBasicAmount">
+                                <Form.Label>description *optional</Form.Label>
+                                <Form.Control type="text" placeholder="description" value={description}
+                                              onChange={e => setDescription(e.target.value)}/>
+                            </Form.Group>
                             <Button variant="primary" type="submit">
                                 Create expense
                             </Button>

@@ -1,7 +1,7 @@
 import {assertIsLoggedIn} from './utils/getUser.js';
 import supabaseClient from './utils/supabaseClient.js';
 import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from './utils/performSupabaseQuery.js';
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 
 //region Mutations & queries
@@ -17,6 +17,15 @@ export const useGetAllOpenDeliveries = ()=>{
         ()=> getAllOpenDeliveries(),
         {}
     )
+}
+export const useCreateDelivery = ()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn:  createDelivery,
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_delivery'])
+        }
+    })
 }
 //endregion
 
