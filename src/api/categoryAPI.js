@@ -1,7 +1,7 @@
 import {assertIsLoggedIn} from './utils/getUser.js';
 import supabaseClient from './utils/supabaseClient.js';
 import {performSupabaseQuery} from './utils/performSupabaseQuery.js';
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 //region Mutations & queries
 /**
@@ -11,10 +11,19 @@ import {useQuery} from "@tanstack/react-query";
  */
 export const useGetAllCategories = () =>{
     return useQuery(
-        ['project_react_expense'],
+        ['project_react_category'],
         ()=> getAllCategories(),
         {}
     )
+}
+export const  useCreateCategory = ()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn:  createCategory,
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_category'])
+        }
+    })
 }
 
 //endregion
