@@ -3,8 +3,7 @@ import {useParams} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {useState} from "react";
 import {useGetAllCategories} from "../../../api/categoryAPI.js";
-import {useGetAllDeliveriesForExpense} from "../../../api/deliveriesAPI.js";
-import Delivery from "../../deliveries/delivery.jsx";
+import {useGetAllDeliveriesForExpense, useUpdateDelivery} from "../../../api/deliveriesAPI.js";
 
 const ExpenseDetails = () => {
     const {id} = useParams()
@@ -15,12 +14,19 @@ const ExpenseDetails = () => {
     const [isNewCategory, setIsNewCategory] = useState(false)
     const [newCategory, setNewCategory]=useState('')
     const {data: deliveries}= useGetAllDeliveriesForExpense({expenseId:id})
+    const{mutate: updateDelivery}= useUpdateDelivery()
     const handleFormOnChange=(key, event)=>{
         let data = tempExpense
 
         data[key]= event.target.value
         console.log(data)
         setTempExpense(data)
+    }
+    const handleUpdateDelivery=(delivery)=>{
+        const date = new Date()
+        delivery.actualDeliveryDate=date
+        console.log(delivery)
+        updateDelivery(delivery)
     }
     const updateExpenseHandler=(event)=>{
         event.preventDefault()
@@ -63,7 +69,7 @@ const ExpenseDetails = () => {
                         <p>{d.expectedDeliveryDate.getDate()}/{d.expectedDeliveryDate.getMonth()}/{d.expectedDeliveryDate.getFullYear()}</p>
                     </Col>
                     <Col>
-                        <Button >should become update/delete</Button>
+                        <Button onClick={()=>handleUpdateDelivery(d)} >delivered</Button>
                     </Col>
                 </Row>)
             })}

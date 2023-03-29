@@ -1,9 +1,10 @@
 import {Button, Col, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {useDeleteDelivery} from "../../api/deliveriesAPI.js";
 
-const Delivery = ({description, price, expectedDeliveryDate, expenseId}) => {
+const Delivery = ({id,description, price, expectedDeliveryDate, expenseId}) => {
     const navigate = useNavigate()
-
+    const {mutate} = useDeleteDelivery()
     const handleNavigate = ()=>{
         navigate(`/expenses/${expenseId}`)
     }
@@ -13,10 +14,13 @@ const Delivery = ({description, price, expectedDeliveryDate, expenseId}) => {
                 <h3>{description}</h3>
             </Col>
             <Col>
-                <p>{price}</p>
+                <p>€{price}</p>
             </Col>
             <Col>
                 <p>{expectedDeliveryDate.getDate()}/{expectedDeliveryDate.getMonth()}/{expectedDeliveryDate.getFullYear()}</p>
+            </Col>
+            <Col>
+                {expenseId && <Button onClick={()=>  mutate({id})}>Delete</Button>}
             </Col>
             <Col>
                 {expenseId && <Button onClick={handleNavigate}>Details</Button>}

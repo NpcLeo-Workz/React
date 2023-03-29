@@ -27,12 +27,43 @@ export const useCreateDelivery = ()=>{
         }
     })
 }
+export const useDeleteDelivery=()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn:  deleteDelivery,
+        onMutate: async ({id})=>{
+            const queryKey = ['project_react_delivery']
+            await queryClient.cancelQueries({queryKey})
+            const prevDeliveries = queryClient.getQueryData(['project_react_delivery'])
+            queryClient.setQueriesData(queryKey,old=>old.filter(d=>d.id !== id))
+            return{prevDeliveries}
+        },
+        onError:(error, {id},context)=>{
+            queryClient.setQueriesData(['project_react_delivery'], context.prevDeliveries)
+        },
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_delivery'])
+        }
+    })
+}
 export const useGetAllDeliveriesForExpense = ({expenseId})=>{
     return useQuery(
         ['project_react_delivery'],
         ()=> getAllDeliveriesForExpense({expenseId}),
         {}
     )
+}
+export const useUpdateDelivery=()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn: updateDelivery,
+        onSuccess: (data)=>{
+            return data
+        },
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_delivery'])
+        }
+    })
 }
 //endregion
 
@@ -179,6 +210,7 @@ const updateDelivery = async (
     const query = supabaseClient
         .from('project_react_delivery')
         .update(updatedDelivery)
+        .eq('id', id)
         .select()
         .single()
 
