@@ -1,6 +1,7 @@
 import {assertIsLoggedIn, getUser} from './utils/getUser.js';
 import {convertFromLowerFirstCamelCaseToSnakeCase, performSupabaseQuery} from './utils/performSupabaseQuery.js';
 import supabaseClient from './utils/supabaseClient.js';
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 //region Mutations & queries
 /**
@@ -8,7 +9,51 @@ import supabaseClient from './utils/supabaseClient.js';
  *                                          MUTATIONS & QUERIES
  * ---------------------------------------------------------------------------------------------------------------------
  */
-
+export const useGetAllExpensesForMonth = ({month, year}) =>{
+    return useQuery(
+        ['project_react_expense', month,year],
+        ()=> getAllExpensesForMonth({month,year}),
+        {}
+    )
+}
+export const useGetAllExpensesForYear = ({year})=>{
+    return useQuery(
+        ['project_react_expense', year],
+        ()=> getAllExpensesForYear({year}),
+        {}
+    )
+}
+export const useGetExpenses = (Id)=>{
+    return useQuery(
+        ['project_react_expense', Id],
+        ()=> getExpense(Id),
+        {}
+    )
+}
+export const useCreateExpense = ()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn: createExpense,
+        onSuccess: (data)=>{
+            return data
+        },
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_expense'])
+        }
+    })
+}
+export const useUpdateExpense=()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn: updateExpense,
+        onSuccess: (data)=>{
+            return data
+        },
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_expense'])
+        }
+    })
+}
 
 //endregion
 
@@ -60,7 +105,6 @@ const getAllExpensesForMonth = async ({month, year}) => {
     const expenses = await performSupabaseQuery(query)
     return expenses.map(e => ({...e, date: new Date(e.date)}))
 }
-
 /**
  * Retrieve all expenses for a given year.
  *
