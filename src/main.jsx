@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
     }
 })
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+
       <BrowserRouter>
           <QueryClientProvider client={queryClient}>
               <React.Suspense fallback={<LoadingPage/>}>
@@ -25,5 +25,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </React.Suspense>
           </QueryClientProvider>
       </BrowserRouter>
-  </React.StrictMode>,
+
 )

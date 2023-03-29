@@ -13,8 +13,8 @@ import expenses from "../expenses.jsx";
 const NewExpense = () => {
     const [name,  setName]  = useState('')
     const [amount, setAmount] = useState(1)
-    const [originalCurrencyId,  setOriginalCurrencyId] = useState(0)
-    const [originalCurrencyAmount, setOriginalCurrencyAmount] = useState(1)
+    const [originalCurrencyId,  setOriginalCurrencyId] = useState()
+    const [originalCurrencyAmount, setOriginalCurrencyAmount] = useState()
     const [date, setDate] = useState(new Date())
     const [categoryId, setCategoryId] = useState(1)
     const [description, setDescription] = useState('')
@@ -71,10 +71,10 @@ const NewExpense = () => {
             date,
             categoryId,
             description})
-
     }
     if(isSuccess){
         if(isDeliverToHome){
+
             newDeliveries.map(delivery=>
                 {
                     const deliv ={
@@ -83,6 +83,7 @@ const NewExpense = () => {
                         price: delivery.price,
                         expectedDeliveryDate: delivery.expectedDeliveryDate,
                     }
+                    console.log(deliv)
                     createNewDelivery(deliv)
                  }
            )

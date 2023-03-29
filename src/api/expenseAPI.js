@@ -42,6 +42,18 @@ export const useCreateExpense = ()=>{
         }
     })
 }
+export const useUpdateExpense=()=>{
+    const queryClient = useQueryClient();
+    return  useMutation({
+        mutationFn: updateExpense,
+        onSuccess: (data)=>{
+            return data
+        },
+        onSettled: async ()=>{
+            await queryClient.invalidateQueries(['project_react_expense'])
+        }
+    })
+}
 
 //endregion
 

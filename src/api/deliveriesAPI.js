@@ -27,6 +27,13 @@ export const useCreateDelivery = ()=>{
         }
     })
 }
+export const useGetAllDeliveriesForExpense = ({expenseId})=>{
+    return useQuery(
+        ['project_react_delivery'],
+        ()=> getAllDeliveriesForExpense({expenseId}),
+        {}
+    )
+}
 //endregion
 
 //region Supabase functions

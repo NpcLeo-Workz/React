@@ -9,7 +9,7 @@ const Expense = ({id, name, amount, date}) => {
     return (
         <Row>
             <Col>
-                <h3>{name}</h3>
+                <h5>{name}</h5>
             </Col>
             <Col>
                 <p>€ {amount}</p>
